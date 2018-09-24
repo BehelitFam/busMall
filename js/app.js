@@ -1,8 +1,12 @@
+'use strict';
+
+
 var choicePanes = [];
 for (var i = 0; i < document.getElementsByClassName('choiceCard').length; i++) {
     choicePanes.push(document.getElementsByClassName('choiceCard')[i]);
 }
 
+var currChoices = [];
 
 console.log(choicePanes);
 
@@ -39,8 +43,11 @@ function genProdChoices() {
 
     for (var i = 0; i < choicePanes.length; i++) {
         choicePanes[i].src = choices[i].imgSource;
-        choices[i].shown 
+        choices[i].shown++;
+        currChoices[i] = choices[i];
     }
+
+    console.log('current choices are ' + currChoices);
 }
 
 
@@ -50,13 +57,13 @@ function clickProduct() {
 
 
 function survey() {
-    genProdChoices();
-    for (var i = 0; i < choicePanes.length; i++) {
-        choicePanes[i].addEventListener('click', clickProduct);
-    }
-    for (var i = 0; i < choices; i++) {
 
-    }
+//     for (var i = 0; i < choicePanes.length; i++) {
+//         choicePanes[i].addEventListener('click', clickProduct);
+//     }
+//     for (var i = 0; i < choices; i++) {
+
+//     }
 }
 
 new Product('img/banana.jpg', 'banana');
@@ -66,6 +73,7 @@ new Product('img/breakfast.jpg', 'breakfast');
 new Product('img/bubblegum.jpg', 'bubblegum');
 new Product('img/chair.jpg', 'chair');
 
-console.log
+survey();
 
 genProdChoices();
+
