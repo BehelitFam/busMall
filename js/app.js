@@ -1,13 +1,13 @@
 'use strict';
 
-var surveyChoices = 3;
+var surveyChoices = 4;
 var surveyParent = document.getElementsByClassName('choiceyChoices')[0];
 console.log(surveyParent);
 
 for (var i = 0; i < surveyChoices; i++) {
     var elDiv = makeChild(surveyParent, 'div', '', 'choiceCard');
     makeChild(elDiv, 'img', '', 'choiceImg');
-    makeChild(elDiv, 'p', 'Choice ' + i);
+    makeChild(elDiv, 'p', 'Choice ' + (i + 1));
 }
 
 var choicePanes = [];
@@ -16,7 +16,7 @@ for (var i = 0; i < document.getElementsByClassName('choiceImg').length; i++) {
 }
 
 var currChoices = [];
-var surveySize = 5;
+var surveySize = 10;
 var surveyCount = 0;
 console.log(choicePanes);
 
@@ -53,7 +53,7 @@ function genProdChoices() {
 
     for (var i = 0; i < choicePanes.length; i++) {
         choicePanes[i].src = choices[i].imgSource;
-        if (surveyCount < 5) {
+        if (surveyCount < surveySize) {
             choices[i].shown++;
         }
         currChoices[i] = choices[i];
@@ -117,6 +117,3 @@ new Product('img/bubblegum.jpg', 'bubblegum');
 new Product('img/chair.jpg', 'chair');
 
 survey();
-console.log('after survey()');
-console.log(Product.allProducts[0].shown);
-console.log(Product.allProducts[0].clicked);
