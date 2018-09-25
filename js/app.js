@@ -44,7 +44,8 @@ function Product (filepath, prodName) {
 
 
 
-// Generates the product choices to be presented to the user and adds to the number of times a product has been shown.
+// Generates randomized product choices to be presented to the user and adds to the number of times each displayed
+// product has been shown.
 function genProdChoices() {
     var choices = [];
     var choicePool = [];
@@ -70,45 +71,55 @@ function genProdChoices() {
     }
 }
 
+// Called when a survey option is clicked on. Records that the function was clicked on using the 
+// Product object's 'clicked' property, and reloads the survey with a new, randomized set of options.
+// Once the user has answered the number of survey questions specified by the surveySize variable,
+// Removes the survey and displays a list of data for each product.
 function clickProduct(index) {
     var index = index;
     currChoices[index].clicked++;
     surveyCount++;
     genProdChoices();
     if (surveyCount === surveySize) {
+        killSurvey();
         showTable();
     }
 }
 
+// Generates a randomized set of product options from available Product objects that will be used to survey
+// user preferences. Adds event listeners to each survey option that call the clickProduct function to 
+// record the user's choice and reloads new survey options every time an option is clicked on.
 function survey() {
         genProdChoices();
         console.log('current choices are ' + currChoices);
         choicePanes.forEach(function(pane, index) {
             pane.addEventListener('click', function(){clickProduct(index)});   
         });
-            
-        
         console.log('exited survey forEach loop');   
     //}
 }
 
+// Removes event listeners from survey option cards.
 function killSurvey() {
     choicePanes.forEach(function(pane, index) {
         pane.removeEventListener('click', function(){clickProduct(index)});   
     });
+    surveyParent.innerHTML = '';
 }
 
+// Displays list of all products and how many times each has been shown by the survey and chosen by the user, respectively.
 function showTable() {
-    killSurvey();
-    surveyParent.innerHTML = '';
-    console.log('entered showTable');
     var elUl = makeChild(surveyParent, 'ul', '');
     var prods = Product.allProducts;
     for (var i = 0; i < prods.length; i++) {
-        makeChild(elUl, 'li', (prods[i].prodName + ' was shown ' + prods[i].shown + ' times, and chosen ' + prods[i].clicked + ' times.'));
+        makeChild(elUl, 'li', (prods[i].prodName + ' was shown ' + prods[i].shown
+        + ' times, and chosen ' + prods[i].clicked + ' times. Chosen ' + Math.floor(100 * prods[i].clicked / prods[i].shown)
+         + '% of the time.'));
     }
 }
 
+// Creates new document element using given parameters for name, text content and optional class,
+// appends it to given parent element, and 
 function makeChild(parent, childElementType, childText, childClass) {
     var el = document.createElement('' + childElementType);
     el.textContent = '' + childText;
