@@ -38,7 +38,15 @@ function Product (filepath, prodName) {
    this.imgSource = filepath;
    this.clicked = 0;
    this.shown = 0;
+   this.shownLast = false;
    Product.allProducts.push(this);
+}
+
+// Sets "shownLast" property for all Product objects to false
+function resetShownLast() {
+    for (var i = 0; i < Product.allProducts.length; i++) {
+        Product.allProducts[i].shownLast = false;
+    }
 }
 
 // Generates randomized, non-duplicate product choices to be presented to the user and adds to the number
@@ -50,12 +58,18 @@ function genProdChoices() {
     var randProd = 0;
 
     for (var i = 0; i < prodPool.length; i++) {
-        choicePool.push(i);
+        if (!prodPool[i].shownLast) {
+            choicePool.push(i);
+        } 
     }
+
+    resetShownLast();
 
     for (var i = 0; i < choicePanes.length; i++) {
         randProd = Math.floor(Math.random() * choicePool.length);
         choices.push(prodPool[choicePool[randProd]]);
+        prodPool[choicePool[randProd]].shownLast = true;
+        console.log(prodPool[choicePool[randProd]]);
         choicePool.splice(randProd, 1);
     }
 
