@@ -7,10 +7,9 @@ for (var i = 0; i < document.getElementsByClassName('choiceCard').length; i++) {
 }
 
 var currChoices = [];
-
-console.log(choicePanes);
-
 var surveySize = 5;
+var surveyCount = 0;
+console.log(choicePanes);
 
 Product.allProducts = [];
 
@@ -21,7 +20,9 @@ function Product (filepath, prodName) {
    this.clicked = 0;
    this.shown = 0;
    Product.allProducts.push(this);
+   this.choiceId = '';
 }
+
 
 
 // Generates the product choices to be presented to the user and adds to the number of times a product has been shown.
@@ -43,27 +44,43 @@ function genProdChoices() {
 
     for (var i = 0; i < choicePanes.length; i++) {
         choicePanes[i].src = choices[i].imgSource;
+        choices[i].choiceId = choicePanes[i].id;
         choices[i].shown++;
         currChoices[i] = choices[i];
     }
 
-    console.log('current choices are ' + currChoices);
 }
 
 
-function clickProduct() {
-    
-}
+// function clickProduct(blah) {
+//     var i = blah;
+//     console.log('i is ' + i);
+//     console.log('clicked is ' + currChoices[i].clicked);
+//     currChoices[i].clicked++;
+//     console.log(currChoices[i].prodName + ' clicked ' + currChoices[i].clicked + ' times');
+//     genProdChoices();
+// }
 
 
 function survey() {
-
-//     for (var i = 0; i < choicePanes.length; i++) {
-//         choicePanes[i].addEventListener('click', clickProduct);
-//     }
-//     for (var i = 0; i < choices; i++) {
-
-//     }
+   //for (var j = 0; j < surveySize; j++) {
+        genProdChoices();
+       // console.log('we are on choice number ' + (j + 1));
+        console.log('current choices are ' + currChoices);
+        choicePanes.forEach(function(pane, index) {
+            console.log('pane is ' + pane);
+            pane.addEventListener('click', function(){
+                console.log('click event triggered');
+                currChoices[index].clicked++;
+                console.log(currChoices[index].prodName + ' clicked: ' + currChoices[index].clicked);
+                genProdChoices();
+                surveyCount++;
+            });
+        });
+            
+        
+        console.log('exited survey forEach loop');   
+    //}
 }
 
 new Product('img/banana.jpg', 'banana');
@@ -74,6 +91,6 @@ new Product('img/bubblegum.jpg', 'bubblegum');
 new Product('img/chair.jpg', 'chair');
 
 survey();
-
-genProdChoices();
-
+console.log('after survey()');
+console.log(Product.allProducts[0].shown);
+console.log(Product.allProducts[0].clicked);
