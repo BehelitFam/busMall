@@ -1,25 +1,35 @@
 'use strict';
 
-var surveyChoices = 4;
+
+// Global variables that determine the number of options the users will be presented with, and the number 
+// of times they will be asked to choose before the survey will end and the results will be displayed. 
+var surveyChoices = 3;
+var surveySize = 25;
+
+
+
 var surveyParent = document.getElementsByClassName('choiceyChoices')[0];
 console.log(surveyParent);
 
+// Constructs clickable option cards that will display the products survey participants will choose from
 for (var i = 0; i < surveyChoices; i++) {
     var elDiv = makeChild(surveyParent, 'div', '', 'choiceCard');
     makeChild(elDiv, 'img', '', 'choiceImg');
     makeChild(elDiv, 'p', 'Choice ' + (i + 1));
 }
 
+// Creates an array of all survey option cards
 var choicePanes = [];
 for (var i = 0; i < document.getElementsByClassName('choiceImg').length; i++) {
     choicePanes.push(document.getElementsByClassName('choiceImg')[i]);
 }
 
+// Creates an array to store the products currently displayed as survey options
 var currChoices = [];
-var surveySize = 10;
-var surveyCount = 0;
-console.log(choicePanes);
 
+var surveyCount = 0;
+
+// Initializes array of all products
 Product.allProducts = [];
 
 // Creates Product object, using the given image filepath and name. Contains counters that store how many times
@@ -109,11 +119,24 @@ function makeChild(parent, childElementType, childText, childClass) {
     return el;
 }
 
-new Product('img/banana.jpg', 'banana');
-new Product('img/bathroom.jpg', 'bathroom');
-new Product('img/boots.jpg', 'boots');
-new Product('img/breakfast.jpg', 'breakfast');
-new Product('img/bubblegum.jpg', 'bubblegum');
-new Product('img/chair.jpg', 'chair');
+new Product('img/banana.jpg', 'Child-Safe Banana Slicer');
+new Product('img/bathroom.jpg', 'Restroom Distractor Stand');
+new Product('img/boots.jpg', '"Has Fashion Finally Gone Too Far" Boots');
+new Product('img/breakfast.jpg', 'Breakfast All-In-Why');
+new Product('img/bubblegum.jpg', 'Meatball...bubblegum...');
+new Product('img/chair.jpg', 'The "I Actually Hate My Back" Chair');
+new Product('img/cthulhu.jpg', 'Cthulhu Arisen From Eternal Slumber');
+new Product('img/dog-duck.jpg', 'Barkish to Quackese Translation Module');
+new Product('img/dragon.jpg', '100% Authentic Dragon Meat');
+new Product('img/pen.jpg', 'The Pen That\'s Mightier Than The Spork');
+new Product('img/pet-sweep.jpg', 'Doggy Dignity Eliminator Shoes');
+new Product('img/r2bag.jpg', 'R2D2 Taxidermy Bag');
+new Product('img/scissors.jpg', 'Pizzanic Ritual Scissors');
+new Product('img/shark.jpg', 'Tasty Human Morsels by Chef Sharkie');
+new Product('img/tauntaun.jpg', 'Tauntaun Sleeping Bag with Integrated Smell Packet');
+new Product('img/unicorn.jpg', '90% Authentic Unicorn Meat');
+new Product('img/usb.gif', 'Descent into Lovecraftian Madness Flash Drive');
+new Product('img/water-can.jpg', 'Escherian Watering Pail');
+new Product('img/wine-glass.jpg', 'Industrial-Grade Wine Spiller');
 
 survey();
