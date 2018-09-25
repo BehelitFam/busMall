@@ -1,15 +1,27 @@
 
-
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
 header, footer {
     background-color: rgb(34, 63, 29);
     color: white;
-    height: 10em;
+    font-size: 3em;
+    height: 3em;
 }
 
 header, footer, main {
-    padding: 0 5 0 5em;
+    padding: 0 5em 0 5em;
     text-align: center;
+}
+
+main {
+    min-height: 600px;
+}
+
+footer {
+    color: rgb(39, 70, 33);
+    margin-bottom: 0;
 }
 
 section {
@@ -19,6 +31,11 @@ section {
 div {
     display: inline-block;
     margin: 0 5em 0 5em;
+}
+
+h2 {
+    display: block;
+    margin: 1em;
 }
 
 img {
