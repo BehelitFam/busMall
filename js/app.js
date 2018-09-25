@@ -1,11 +1,18 @@
 'use strict';
 
+var surveyChoices = 3;
 var surveyParent = document.getElementsByClassName('choiceyChoices')[0];
 console.log(surveyParent);
 
+for (var i = 0; i < surveyChoices; i++) {
+    var elDiv = makeChild(surveyParent, 'div', '', 'choiceCard');
+    makeChild(elDiv, 'img', '', 'choiceImg');
+    makeChild(elDiv, 'p', 'Choice ' + i);
+}
+
 var choicePanes = [];
-for (var i = 0; i < document.getElementsByClassName('choiceCard').length; i++) {
-    choicePanes.push(document.getElementsByClassName('choiceCard')[i]);
+for (var i = 0; i < document.getElementsByClassName('choiceImg').length; i++) {
+    choicePanes.push(document.getElementsByClassName('choiceImg')[i]);
 }
 
 var currChoices = [];
@@ -46,7 +53,7 @@ function genProdChoices() {
 
     for (var i = 0; i < choicePanes.length; i++) {
         choicePanes[i].src = choices[i].imgSource;
-        if (surveyCount != 5) {
+        if (surveyCount < 5) {
             choices[i].shown++;
         }
         currChoices[i] = choices[i];
@@ -92,9 +99,12 @@ function showTable() {
     }
 }
 
-function makeChild(parent, childElementType, childText) {
+function makeChild(parent, childElementType, childText, childClass) {
     var el = document.createElement('' + childElementType);
     el.textContent = '' + childText;
+    if (childClass) {
+        el.classList.add('' + childClass);
+    }
     parent.appendChild(el);
     return el;
 }
