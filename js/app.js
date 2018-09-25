@@ -1,13 +1,11 @@
 'use strict';
 
-
 // Global variables that determine the number of options the users will be presented with, and the number 
 // of times they will be asked to choose before the survey will end and the results will be displayed. 
 var surveyChoices = 3;
 var surveySize = 25;
 
-
-
+// Creates reference to parent element where we will display our survey
 var surveyParent = document.getElementsByClassName('choiceyChoices')[0];
 console.log(surveyParent);
 
@@ -27,25 +25,32 @@ for (var i = 0; i < document.getElementsByClassName('choiceImg').length; i++) {
 // Creates an array to store the products currently displayed as survey options
 var currChoices = [];
 
+// Creates variable to store number of times user has responded to survey choices
 var surveyCount = 0;
 
 // Initializes array of all products
 Product.allProducts = [];
 
 // Creates Product object, using the given image filepath and name. Contains counters that store how many times
-// this product has been shown and clicked on in the user survey. Adds each 
+// this product has been shown and clicked on in the user survey.
 function Product (filepath, prodName) {
    this.prodName = prodName;
    this.imgSource = filepath;
    this.clicked = 0;
    this.shown = 0;
+   this.shownLast = false;
    Product.allProducts.push(this);
 }
 
+// Sets "shownLast" property for all Product objects to false
+function resetShownLast() {
+    for (var i = 0; i < Product.allProducts.length; i++) {
+        Product.allProducts[i].shownLast = false;
+    }
+}
 
-
-// Generates randomized product choices to be presented to the user and adds to the number of times each displayed
-// product has been shown.
+// Generates randomized, non-duplicate product choices to be presented to the user and adds to the number
+// of times each displayed product has been shown.
 function genProdChoices() {
     var choices = [];
     var choicePool = [];
@@ -53,12 +58,18 @@ function genProdChoices() {
     var randProd = 0;
 
     for (var i = 0; i < prodPool.length; i++) {
-        choicePool.push(i);
+        if (!prodPool[i].shownLast) {
+            choicePool.push(i);
+        } 
     }
+
+    resetShownLast();
 
     for (var i = 0; i < choicePanes.length; i++) {
         randProd = Math.floor(Math.random() * choicePool.length);
         choices.push(prodPool[choicePool[randProd]]);
+        prodPool[choicePool[randProd]].shownLast = true;
+        console.log(prodPool[choicePool[randProd]]);
         choicePool.splice(randProd, 1);
     }
 
@@ -90,12 +101,12 @@ function clickProduct(index) {
 // user preferences. Adds event listeners to each survey option that call the clickProduct function to 
 // record the user's choice and reloads new survey options every time an option is clicked on.
 function survey() {
-        genProdChoices();
-        console.log('current choices are ' + currChoices);
-        choicePanes.forEach(function(pane, index) {
-            pane.addEventListener('click', function(){clickProduct(index)});   
-        });
-        console.log('exited survey forEach loop');   
+    genProdChoices();
+    console.log('current choices are ' + currChoices);
+    choicePanes.forEach(function(pane, index) {
+        pane.addEventListener('click', function(){clickProduct(index)});   
+    });
+    console.log('exited survey forEach loop');   
 }
 
 // Removes event listeners from survey option cards.
@@ -129,7 +140,7 @@ function makeChild(parent, childElementType, childText, childClass) {
     return el;
 }
 
-new Product('img/banana.jpg', 'Child-Safe Banana Slicer');
+new Product('img/banana.jpg', 'Child-Safe Nanner Slicer');
 new Product('img/bathroom.jpg', 'Restroom Distractor Stand');
 new Product('img/boots.jpg', '"Has Fashion Finally Gone Too Far" Boots');
 new Product('img/breakfast.jpg', 'Breakfast All-In-Why');
