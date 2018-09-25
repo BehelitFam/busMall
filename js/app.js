@@ -96,7 +96,6 @@ function survey() {
             pane.addEventListener('click', function(){clickProduct(index)});   
         });
         console.log('exited survey forEach loop');   
-    //}
 }
 
 // Removes event listeners from survey option cards.
