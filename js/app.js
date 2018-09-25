@@ -1,5 +1,7 @@
 'use strict';
 
+var surveyParent = document.getElementsByClassName('choiceyChoices')[0];
+console.log(surveyParent);
 
 var choicePanes = [];
 for (var i = 0; i < document.getElementsByClassName('choiceCard').length; i++) {
@@ -13,14 +15,14 @@ console.log(choicePanes);
 
 Product.allProducts = [];
 
-// Creates Product option with the product name and path to 
+// Creates Product object, using the given image filepath and name. Contains counters that store how many times
+// this product has been shown and clicked on in the user survey. Adds each 
 function Product (filepath, prodName) {
    this.prodName = prodName;
    this.imgSource = filepath;
    this.clicked = 0;
    this.shown = 0;
    Product.allProducts.push(this);
-   this.choiceId = '';
 }
 
 
@@ -44,43 +46,57 @@ function genProdChoices() {
 
     for (var i = 0; i < choicePanes.length; i++) {
         choicePanes[i].src = choices[i].imgSource;
-        choices[i].choiceId = choicePanes[i].id;
-        choices[i].shown++;
+        if (surveyCount != 5) {
+            choices[i].shown++;
+        }
         currChoices[i] = choices[i];
     }
-
 }
 
-
-// function clickProduct(blah) {
-//     var i = blah;
-//     console.log('i is ' + i);
-//     console.log('clicked is ' + currChoices[i].clicked);
-//     currChoices[i].clicked++;
-//     console.log(currChoices[i].prodName + ' clicked ' + currChoices[i].clicked + ' times');
-//     genProdChoices();
-// }
-
+function clickProduct(index) {
+    var index = index;
+    currChoices[index].clicked++;
+    surveyCount++;
+    genProdChoices();
+    if (surveyCount === surveySize) {
+        showTable();
+    }
+}
 
 function survey() {
-   //for (var j = 0; j < surveySize; j++) {
         genProdChoices();
-       // console.log('we are on choice number ' + (j + 1));
         console.log('current choices are ' + currChoices);
         choicePanes.forEach(function(pane, index) {
-            console.log('pane is ' + pane);
-            pane.addEventListener('click', function(){
-                console.log('click event triggered');
-                currChoices[index].clicked++;
-                console.log(currChoices[index].prodName + ' clicked: ' + currChoices[index].clicked);
-                genProdChoices();
-                surveyCount++;
-            });
+            pane.addEventListener('click', function(){clickProduct(index)});   
         });
             
         
         console.log('exited survey forEach loop');   
     //}
+}
+
+function killSurvey() {
+    choicePanes.forEach(function(pane, index) {
+        pane.removeEventListener('click', function(){clickProduct(index)});   
+    });
+}
+
+function showTable() {
+    killSurvey();
+    surveyParent.innerHTML = '';
+    console.log('entered showTable');
+    var elUl = makeChild(surveyParent, 'ul', '');
+    var prods = Product.allProducts;
+    for (var i = 0; i < prods.length; i++) {
+        makeChild(elUl, 'li', (prods[i].prodName + ' was shown ' + prods[i].shown + ' times, and chosen ' + prods[i].clicked + ' times.'));
+    }
+}
+
+function makeChild(parent, childElementType, childText) {
+    var el = document.createElement('' + childElementType);
+    el.textContent = '' + childText;
+    parent.appendChild(el);
+    return el;
 }
 
 new Product('img/banana.jpg', 'banana');
