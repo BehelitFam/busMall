@@ -3,11 +3,14 @@
 // Global variables that determine the number of options the users will be presented with, and the number 
 // of times they will be asked to choose before the survey will end and the results will be displayed. 
 var surveyChoices = 3;
-var surveySize = 25;
+var surveySize = 5;
 
 // Creates reference to parent element where we will display our survey
 var surveyParent = document.getElementsByClassName('choiceyChoices')[0];
 console.log(surveyParent);
+
+var resultsParent = document.getElementsByClassName('surveyData')[0];
+console.log(resultsParent);
 
 // Constructs clickable option cards that will display the products survey participants will choose from
 for (var i = 0; i < surveyChoices; i++) {
@@ -56,6 +59,7 @@ function genProdChoices() {
     var choicePool = [];
     var prodPool = Product.allProducts;
     var randProd = 0;
+    var choiceIndex = 0;
 
     for (var i = 0; i < prodPool.length; i++) {
         if (!prodPool[i].shownLast) {
@@ -67,9 +71,9 @@ function genProdChoices() {
 
     for (var i = 0; i < choicePanes.length; i++) {
         randProd = Math.floor(Math.random() * choicePool.length);
-        choices.push(prodPool[choicePool[randProd]]);
-        prodPool[choicePool[randProd]].shownLast = true;
-        console.log(prodPool[choicePool[randProd]]);
+        choiceIndex = choicePool[randProd];
+        choices.push(prodPool[choiceIndex]);
+        prodPool[choiceIndex].shownLast = true;
         choicePool.splice(randProd, 1);
     }
 
@@ -79,52 +83,7 @@ function genProdChoices() {
             choices[i].shown++;
         }
         currChoices[i] = choices[i];
-    }
-}
-
-// Called when a survey option is clicked on. Records that the function was clicked on using the 
-// Product object's 'clicked' property, and reloads the survey with a new, randomized set of options.
-// Once the user has answered the number of survey questions specified by the surveySize variable,
-// Removes the survey and displays a list of data for each product.
-function clickProduct(index) {
-    var index = index;
-    currChoices[index].clicked++;
-    surveyCount++;
-    genProdChoices();
-    if (surveyCount === surveySize) {
-        killSurvey();
-        showTable();
-    }
-}
-
-// Generates a randomized set of product options from available Product objects that will be used to survey
-// user preferences. Adds event listeners to each survey option that call the clickProduct function to 
-// record the user's choice and reloads new survey options every time an option is clicked on.
-function survey() {
-    genProdChoices();
-    console.log('current choices are ' + currChoices);
-    choicePanes.forEach(function(pane, index) {
-        pane.addEventListener('click', function(){clickProduct(index)});   
-    });
-    console.log('exited survey forEach loop');   
-}
-
-// Removes event listeners from survey option cards.
-function killSurvey() {
-    choicePanes.forEach(function(pane, index) {
-        pane.removeEventListener('click', function(){clickProduct(index)});   
-    });
-    surveyParent.innerHTML = '';
-}
-
-// Displays list of all products and how many times each has been shown by the survey and chosen by the user, respectively.
-function showTable() {
-    var elUl = makeChild(surveyParent, 'ul', '');
-    var prods = Product.allProducts;
-    for (var i = 0; i < prods.length; i++) {
-        makeChild(elUl, 'li', (prods[i].prodName + ' was shown ' + prods[i].shown
-        + ' times, and chosen ' + prods[i].clicked + ' times. Chosen ' + Math.floor(100 * prods[i].clicked / prods[i].shown)
-         + '% of the time.'));
+        choicePanes[i].alt = currChoices[i].prodName;
     }
 }
 
@@ -139,6 +98,77 @@ function makeChild(parent, childElementType, childText, childClass) {
     parent.appendChild(el);
     return el;
 }
+
+// Called when a survey option is clicked on. Records that the function was clicked on using the 
+// Product object's 'clicked' property, and reloads the survey with a new, randomized set of options.
+// Once the user has answered the number of survey questions specified by the surveySize variable,
+// Removes the survey and displays a list of data for each product.
+var clickProduct = function() {
+    var chosenOne = searchProdsByName(this.alt);
+    chosenOne.clicked++;
+    surveyCount++;
+    genProdChoices();
+    if (surveyCount === surveySize) {
+        killSurvey();
+        showList();
+    }
+}
+
+// Searches the list of products and returns 
+function searchProdsByName(productName) {
+    var productName = productName;
+    var prodRef;
+    for (var i = 0; i < Product.allProducts.length; i++) {
+        if (Product.allProducts[i].prodName === productName) {
+            prodRef = Product.allProducts[i];
+        }
+    }
+    return prodRef;
+}
+
+// Generates a randomized set of product options from available Product objects that will be used to survey
+// user preferences. Adds event listeners to each survey option that call the clickProduct function to 
+// record the user's choice and reloads new survey options every time an option is clicked on.
+function survey() {
+    genProdChoices();
+    console.log('current choices are ' + currChoices);
+    choicePanes.forEach(function(pane, index) {
+        pane.addEventListener('click', clickProduct);   
+    });
+    console.log('exited survey forEach loop');   
+}
+
+// Removes event listeners from survey option cards.
+function killSurvey() {
+    choicePanes.forEach(function(pane, index) {
+        console.info('called killSurvey()');
+        console.log(pane);
+        pane.removeEventListener('click', clickProduct); 
+    });
+    console.log(surveyCount);
+    console.log(Product.allProducts[0].shown);
+}
+
+// Displays list of all products and how many times each has been shown by the survey and chosen by the user, respectively.
+function showList() {
+    var elUl = makeChild(resultsParent, 'ul', '');
+    var prods = Product.allProducts;
+    var dataText = '';
+    for (var i = 0; i < prods.length; i++) {
+        dataText = prods[i].prodName + ' was shown ' + prods[i].shown
+         + ' times, and chosen ' + prods[i].clicked + ' times. Chosen '
+         + Math.ceil(100 * prods[i].clicked / (prods[i].shown + .00000001))
+         + '% of the time.';
+        makeChild(elUl, 'li', dataText);
+    }
+}
+
+
+function showChart() {
+    var elChart = makeChild(resultsParent, 'canvas', '', 'chart');
+    
+}
+
 
 new Product('img/banana.jpg', 'Child-Safe Nanner Slicer');
 new Product('img/bathroom.jpg', 'Restroom Distractor Stand');

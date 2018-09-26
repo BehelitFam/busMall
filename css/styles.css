@@ -29,6 +29,7 @@ section {
 }
 
 div {
+    border: 3px solid black;
     display: inline-block;
     margin: 0 5em 0 5em;
 }
@@ -47,4 +48,10 @@ li {
     color: rgb(40, 40, 40);
     font-size: 1.1em;
     margin: .5em;
+}
+
+
+canvas {
+    height: 300px;
+    width: 300px;
 }
