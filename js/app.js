@@ -3,7 +3,7 @@
 // Global variables that determine the number of options the users will be presented with, and the number 
 // of times they will be asked to choose before the survey will end and the results will be displayed. 
 var surveyChoices = 3;
-var surveySize = 5;
+var surveySize = 10;
 
 // Creates reference to parent element where we will display our survey
 var surveyParent = document.getElementsByClassName('choiceyChoices')[0];
@@ -25,6 +25,7 @@ for (var i = 0; i < document.getElementsByClassName('choiceImg').length; i++) {
     choicePanes.push(document.getElementsByClassName('choiceImg')[i]);
 }
 
+
 // Creates an array to store the products currently displayed as survey options
 var currChoices = [];
 
@@ -36,13 +37,37 @@ Product.allProducts = [];
 
 // Creates Product object, using the given image filepath and name. Contains counters that store how many times
 // this product has been shown and clicked on in the user survey.
-function Product (filepath, prodName) {
+function Product (filepath, prodName, funName) {
    this.prodName = prodName;
+   this.funName = funName;
    this.imgSource = filepath;
    this.clicked = 0;
    this.shown = 0;
    this.shownLast = false;
    Product.allProducts.push(this);
+}
+
+// Initializes a set of products to be used in the survey
+function seedProducts() {
+    new Product('img/banana.jpg', 'banana', 'Child-Safe Nanner Slicer');
+    new Product('img/bathroom.jpg', 'bathroom', 'Restroom Distractor Stand');
+    new Product('img/boots.jpg', 'boots', '"Has Fashion Finally Gone Too Far" Boots');
+    new Product('img/breakfast.jpg', 'breakfast', 'Breakfast All-In-Why');
+    new Product('img/bubblegum.jpg', 'bubblegum', 'Meatball...bubblegum...');
+    new Product('img/chair.jpg', 'chair', 'The "I Actually Hate My Back" Chair');
+    new Product('img/cthulhu.jpg', 'cthulhu', 'Cthulhu Arisen From Eternal Slumber');
+    new Product('img/dog-duck.jpg', 'dog-duck', 'Barkish to Quackese Translation Module');
+    new Product('img/dragon.jpg', 'dragon', '100% Authentic Dragon Meat');
+    new Product('img/pen.jpg', 'pen', 'The Pen That\'s Mightier Than The Spork');
+    new Product('img/pet-sweep.jpg', 'pet-sweep', 'Doggy Dignity Eliminator Shoes');
+    new Product('img/r2bag.jpg', 'r2bag', 'R2D2 Taxidermy Bag');
+    new Product('img/scissors.jpg', 'scissors', 'Pizzanic Ritual Scissors');
+    new Product('img/shark.jpg', 'shark', 'Tasty Human Morsels by Chef Sharkie');
+    new Product('img/tauntaun.jpg', 'tauntaun', 'Tauntaun Sleeping Bag with Integrated Smell Packet');
+    new Product('img/unicorn.jpg', 'unicorn', '90% Authentic Unicorn Meat');
+    new Product('img/usb.gif', 'usb', 'Descent into Lovecraftian Madness Flash Drive');
+    new Product('img/water-can.jpg', 'water-can', 'Escherian Watering Pail');
+    new Product('img/wine-glass.jpg', 'wine-glass', 'Industrial-Grade Wine Spiller');
 }
 
 // Sets "shownLast" property for all Product objects to false
@@ -91,7 +116,9 @@ function genProdChoices() {
 // appends it to given parent element, and 
 function makeChild(parent, childElementType, childText, childClass) {
     var el = document.createElement('' + childElementType);
-    el.textContent = '' + childText;
+    if (childText) {
+        el.textContent = '' + childText;
+    }
     if (childClass) {
         el.classList.add('' + childClass);
     }
@@ -109,8 +136,7 @@ var clickProduct = function() {
     surveyCount++;
     genProdChoices();
     if (surveyCount === surveySize) {
-        killSurvey();
-        showList();
+        surveyCompleted();
     }
 }
 
@@ -131,27 +157,21 @@ function searchProdsByName(productName) {
 // record the user's choice and reloads new survey options every time an option is clicked on.
 function survey() {
     genProdChoices();
-    console.log('current choices are ' + currChoices);
     choicePanes.forEach(function(pane, index) {
         pane.addEventListener('click', clickProduct);   
-    });
-    console.log('exited survey forEach loop');   
+    }); 
 }
 
 // Removes event listeners from survey option cards.
 function killSurvey() {
     choicePanes.forEach(function(pane, index) {
-        console.info('called killSurvey()');
-        console.log(pane);
         pane.removeEventListener('click', clickProduct); 
     });
-    console.log(surveyCount);
-    console.log(Product.allProducts[0].shown);
 }
 
 // Displays list of all products and how many times each has been shown by the survey and chosen by the user, respectively.
 function showList() {
-    var elUl = makeChild(resultsParent, 'ul', '');
+    var elUl = makeChild(resultsParent, 'ul');
     var prods = Product.allProducts;
     var dataText = '';
     for (var i = 0; i < prods.length; i++) {
@@ -163,31 +183,108 @@ function showList() {
     }
 }
 
+// Makes and returns array of all product names
+function prodLabels() {
+    var labels = [];
+    var prods = Product.allProducts;
+    for (var i = 0; i < prods.length; i++) {
+        labels.push(prods[i].prodName);
+    }
+    console.log(labels);
+    return labels;
+}
 
-function showChart() {
-    var elChart = makeChild(resultsParent, 'canvas', '', 'chart');
+// Makes and returns array of click counts for all products
+function prodClickData() {
+    var clicks = [];
+    var prods = Product.allProducts;
+    for (var i = 0; i < prods.length; i++) {
+        clicks.push(prods[i].clicked);
+    }
+    console.log(clicks);
+    return clicks;
+}
+
+// Returns a random rgb color value as a string
+function randomColor() {
+    var red = Math.floor(Math.random() * 255);
+    var green = Math.floor(Math.random() * 255);
+    var blue = Math.floor(Math.random() * 255);
+    return 'rgb(' + red + ', ' + green + ', ' + blue + ')'
     
 }
 
+// Returns an array of specified length containing random rgb color values as strings
+function randomColors(numColors) {
+    var colorArray = [];
+    if (numColors) {
+        var i = 0;
+        while (i < numColors) {
+            colorArray.push(randomColor());
+            i++;
+        }
+    }
+    return colorArray;
+}
 
-new Product('img/banana.jpg', 'Child-Safe Nanner Slicer');
-new Product('img/bathroom.jpg', 'Restroom Distractor Stand');
-new Product('img/boots.jpg', '"Has Fashion Finally Gone Too Far" Boots');
-new Product('img/breakfast.jpg', 'Breakfast All-In-Why');
-new Product('img/bubblegum.jpg', 'Meatball...bubblegum...');
-new Product('img/chair.jpg', 'The "I Actually Hate My Back" Chair');
-new Product('img/cthulhu.jpg', 'Cthulhu Arisen From Eternal Slumber');
-new Product('img/dog-duck.jpg', 'Barkish to Quackese Translation Module');
-new Product('img/dragon.jpg', '100% Authentic Dragon Meat');
-new Product('img/pen.jpg', 'The Pen That\'s Mightier Than The Spork');
-new Product('img/pet-sweep.jpg', 'Doggy Dignity Eliminator Shoes');
-new Product('img/r2bag.jpg', 'R2D2 Taxidermy Bag');
-new Product('img/scissors.jpg', 'Pizzanic Ritual Scissors');
-new Product('img/shark.jpg', 'Tasty Human Morsels by Chef Sharkie');
-new Product('img/tauntaun.jpg', 'Tauntaun Sleeping Bag with Integrated Smell Packet');
-new Product('img/unicorn.jpg', '90% Authentic Unicorn Meat');
-new Product('img/usb.gif', 'Descent into Lovecraftian Madness Flash Drive');
-new Product('img/water-can.jpg', 'Escherian Watering Pail');
-new Product('img/wine-glass.jpg', 'Industrial-Grade Wine Spiller');
+// Creates a horizontal bar chart showing the number of times each product was clicked in the user survey
+function showBarChart() {
+    var prodNames = prodLabels();
+    var clickData = prodClickData();
 
+    var elBarChart = makeChild(resultsParent, 'canvas').getContext('2d');
+    
+    new Chart (elBarChart, {
+        type: 'horizontalBar',
+        data: {
+            labels: prodNames,
+            datasets: [{
+                label: 'Number of Times Each Item was Clicked',
+                backgroundColor: randomColor(),
+                data: clickData
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: true
+        }
+    });
+}
+
+// Creates a pie chart showing the percentage of clicks each Product received in the user survey
+function showPieChart() {
+    var prodNames = prodLabels();
+    var clickData = prodClickData();
+
+    var elPieChart = makeChild(resultsParent, 'canvas').getContext('2d');
+
+    new Chart(elPieChart, {
+        type: 'pie',
+        data: {
+            labels: prodNames,
+            datasets: [{
+                label: 'Percentage of Total Clicks',
+                backgroundColor: randomColors(Product.allProducts.length),
+                data: clickData
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: true
+        }
+    });
+}
+
+function showCharts() {
+    showBarChart();
+    showPieChart();
+}
+
+function surveyCompleted() {
+    killSurvey();
+    showCharts();
+}
+
+
+seedProducts();
 survey();

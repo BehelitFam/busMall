@@ -1,6 +1,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
 }
 
 header, footer {
@@ -11,7 +12,7 @@ header, footer {
 }
 
 header, footer, main {
-    padding: 0 5em 0 5em;
+    padding: 0 3em 0 3m;
     text-align: center;
 }
 
@@ -25,7 +26,10 @@ footer {
 }
 
 section {
-    padding: 5em;
+    border: 1px solid green;
+    margin: 1em;
+    text-align: center;
+    width: auto;
 }
 
 div {
@@ -50,8 +54,11 @@ li {
     margin: .5em;
 }
 
-
 canvas {
-    height: 300px;
-    width: 300px;
+    border: 3px solid blue;
+    margin-left: auto;
+    margin-right: auto;
+    padding: .2em;
+    width: 40%;
+    
 }
