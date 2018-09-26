@@ -25,6 +25,8 @@ for (var i = 0; i < document.getElementsByClassName('choiceImg').length; i++) {
     choicePanes.push(document.getElementsByClassName('choiceImg')[i]);
 }
 
+
+
 // Creates an array to store the products currently displayed as survey options
 var currChoices = [];
 
@@ -43,6 +45,29 @@ function Product (filepath, prodName) {
    this.shown = 0;
    this.shownLast = false;
    Product.allProducts.push(this);
+}
+
+// Initializes a set of products to be used in the survey
+function seedProducts() {
+    new Product('img/banana.jpg', 'Child-Safe Nanner Slicer');
+    new Product('img/bathroom.jpg', 'Restroom Distractor Stand');
+    new Product('img/boots.jpg', '"Has Fashion Finally Gone Too Far" Boots');
+    new Product('img/breakfast.jpg', 'Breakfast All-In-Why');
+    new Product('img/bubblegum.jpg', 'Meatball...bubblegum...');
+    new Product('img/chair.jpg', 'The "I Actually Hate My Back" Chair');
+    new Product('img/cthulhu.jpg', 'Cthulhu Arisen From Eternal Slumber');
+    new Product('img/dog-duck.jpg', 'Barkish to Quackese Translation Module');
+    new Product('img/dragon.jpg', '100% Authentic Dragon Meat');
+    new Product('img/pen.jpg', 'The Pen That\'s Mightier Than The Spork');
+    new Product('img/pet-sweep.jpg', 'Doggy Dignity Eliminator Shoes');
+    new Product('img/r2bag.jpg', 'R2D2 Taxidermy Bag');
+    new Product('img/scissors.jpg', 'Pizzanic Ritual Scissors');
+    new Product('img/shark.jpg', 'Tasty Human Morsels by Chef Sharkie');
+    new Product('img/tauntaun.jpg', 'Tauntaun Sleeping Bag with Integrated Smell Packet');
+    new Product('img/unicorn.jpg', '90% Authentic Unicorn Meat');
+    new Product('img/usb.gif', 'Descent into Lovecraftian Madness Flash Drive');
+    new Product('img/water-can.jpg', 'Escherian Watering Pail');
+    new Product('img/wine-glass.jpg', 'Industrial-Grade Wine Spiller');
 }
 
 // Sets "shownLast" property for all Product objects to false
@@ -170,24 +195,5 @@ function showChart() {
 }
 
 
-new Product('img/banana.jpg', 'Child-Safe Nanner Slicer');
-new Product('img/bathroom.jpg', 'Restroom Distractor Stand');
-new Product('img/boots.jpg', '"Has Fashion Finally Gone Too Far" Boots');
-new Product('img/breakfast.jpg', 'Breakfast All-In-Why');
-new Product('img/bubblegum.jpg', 'Meatball...bubblegum...');
-new Product('img/chair.jpg', 'The "I Actually Hate My Back" Chair');
-new Product('img/cthulhu.jpg', 'Cthulhu Arisen From Eternal Slumber');
-new Product('img/dog-duck.jpg', 'Barkish to Quackese Translation Module');
-new Product('img/dragon.jpg', '100% Authentic Dragon Meat');
-new Product('img/pen.jpg', 'The Pen That\'s Mightier Than The Spork');
-new Product('img/pet-sweep.jpg', 'Doggy Dignity Eliminator Shoes');
-new Product('img/r2bag.jpg', 'R2D2 Taxidermy Bag');
-new Product('img/scissors.jpg', 'Pizzanic Ritual Scissors');
-new Product('img/shark.jpg', 'Tasty Human Morsels by Chef Sharkie');
-new Product('img/tauntaun.jpg', 'Tauntaun Sleeping Bag with Integrated Smell Packet');
-new Product('img/unicorn.jpg', '90% Authentic Unicorn Meat');
-new Product('img/usb.gif', 'Descent into Lovecraftian Madness Flash Drive');
-new Product('img/water-can.jpg', 'Escherian Watering Pail');
-new Product('img/wine-glass.jpg', 'Industrial-Grade Wine Spiller');
-
+seedProducts();
 survey();
