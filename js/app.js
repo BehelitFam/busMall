@@ -32,9 +32,6 @@ var currChoices = [];
 // Creates variable to store number of times user has responded to survey choices
 var surveyCount = 0;
 
-// Initializes array of all products
-Product.allProducts = [];
-
 // Creates Product object, using the given image filepath and name. Contains counters that store how many times
 // this product has been shown and clicked on in the user survey.
 function Product (filepath, prodName, funName) {
@@ -46,6 +43,9 @@ function Product (filepath, prodName, funName) {
    this.shownLast = false;
    Product.allProducts.push(this);
 }
+
+// Initializes array of all Products
+Product.allProducts = [];
 
 // Initializes a set of products to be used in the survey
 function seedProducts() {
@@ -169,19 +169,19 @@ function killSurvey() {
     });
 }
 
-// Displays list of all products and how many times each has been shown by the survey and chosen by the user, respectively.
-function showList() {
-    var elUl = makeChild(resultsParent, 'ul');
-    var prods = Product.allProducts;
-    var dataText = '';
-    for (var i = 0; i < prods.length; i++) {
-        dataText = prods[i].prodName + ' was shown ' + prods[i].shown
-         + ' times, and chosen ' + prods[i].clicked + ' times. Chosen '
-         + Math.ceil(100 * prods[i].clicked / (prods[i].shown + .00000001))
-         + '% of the time.';
-        makeChild(elUl, 'li', dataText);
-    }
-}
+// // Displays list of all products and how many times each has been shown by the survey and chosen by the user, respectively.
+// function showList() {
+//     var elUl = makeChild(resultsParent, 'ul');
+//     var prods = Product.allProducts;
+//     var dataText = '';
+//     for (var i = 0; i < prods.length; i++) {
+//         dataText = prods[i].prodName + ' was shown ' + prods[i].shown
+//          + ' times, and chosen ' + prods[i].clicked + ' times. Chosen '
+//          + Math.ceil(100 * prods[i].clicked / (prods[i].shown + .00000001))
+//          + '% of the time.';
+//         makeChild(elUl, 'li', dataText);
+//     }
+// }
 
 // Makes and returns array of all product names
 function prodLabels() {
@@ -210,8 +210,7 @@ function randomColor() {
     var red = Math.floor(Math.random() * 255);
     var green = Math.floor(Math.random() * 255);
     var blue = Math.floor(Math.random() * 255);
-    return 'rgb(' + red + ', ' + green + ', ' + blue + ')'
-    
+    return 'rgb(' + red + ', ' + green + ', ' + blue + ')';
 }
 
 // Returns an array of specified length containing random rgb color values as strings
@@ -240,7 +239,7 @@ function showBarChart() {
             labels: prodNames,
             datasets: [{
                 label: 'Number of Times Each Item was Clicked',
-                backgroundColor: randomColor(),
+                backgroundColor: randomColors(Product.allProducts.length),
                 data: clickData
             }]
         },
@@ -275,11 +274,15 @@ function showPieChart() {
     });
 }
 
+// Displays a bar and pie chart using user click data; graphs the number of clicks for each product and the 
+// percentage of clicks for each product, respectively. 
 function showCharts() {
     showBarChart();
     showPieChart();
 }
 
+// Triggered when the number of products chosen in the user survey reaches the maximum survey size.
+// Removes event listeners from 
 function surveyCompleted() {
     killSurvey();
     showCharts();
