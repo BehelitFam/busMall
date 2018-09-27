@@ -2,21 +2,19 @@
 
 // Global variables that determine the number of options the users will be presented with, and the number 
 // of times they will be asked to choose before the survey will end and the results will be displayed. 
-var surveyChoices = 3;
+var surveyChoices = 5;
 var surveySize = 10;
 
 // Creates reference to parent element where we will display our survey
 var surveyParent = document.getElementsByClassName('choiceyChoices')[0];
-console.log(surveyParent);
 
 var resultsParent = document.getElementsByClassName('surveyData')[0];
-console.log(resultsParent);
 
 // Constructs clickable option cards that will display the products survey participants will choose from
 for (var i = 0; i < surveyChoices; i++) {
     var elDiv = makeChild(surveyParent, 'div', '', 'choiceCard');
     makeChild(elDiv, 'img', '', 'choiceImg');
-    makeChild(elDiv, 'p', 'Choice ' + (i + 1));
+    makeChild(elDiv, 'p');
 }
 
 // Creates an array of all survey option cards
@@ -32,7 +30,9 @@ var currChoices = [];
 // Creates variable to store number of times user has responded to survey choices
 var surveyCount = 0;
 
-// Initializes array of all products
+// Creates array of random colors we will use to fill our chart
+
+// Initializes array of all Products
 Product.allProducts = [];
 
 // Creates Product object, using the given image filepath and name. Contains counters that store how many times
@@ -46,6 +46,7 @@ function Product (filepath, prodName, funName) {
    this.shownLast = false;
    Product.allProducts.push(this);
 }
+
 
 // Initializes a set of products to be used in the survey
 function seedProducts() {
@@ -69,6 +70,20 @@ function seedProducts() {
     new Product('img/water-can.jpg', 'water-can', 'Escherian Watering Pail');
     new Product('img/wine-glass.jpg', 'wine-glass', 'Industrial-Grade Wine Spiller');
 }
+
+// If user has no stored survey data, seeds new products. If user's browser has stored data in localStorage,
+// loads the product survey data from their storage. 
+function genProducts() {
+    var myProducts = localStorage.getItem('products');
+    if (myProducts) {
+        console.info('Products loaded from storage');
+        Product.allProducts = JSON.parse(myProducts);
+    } else {
+        console.log('Products not found in storage. Seeding products.');
+        seedProducts();
+    }
+}
+
 
 // Sets "shownLast" property for all Product objects to false
 function resetShownLast() {
@@ -109,6 +124,7 @@ function genProdChoices() {
         }
         currChoices[i] = choices[i];
         choicePanes[i].alt = currChoices[i].prodName;
+        choicePanes[i].nextSibling.textContent = currChoices[i].funName;
     }
 }
 
@@ -131,7 +147,7 @@ function makeChild(parent, childElementType, childText, childClass) {
 // Once the user has answered the number of survey questions specified by the surveySize variable,
 // Removes the survey and displays a list of data for each product.
 var clickProduct = function() {
-    var chosenOne = searchProdsByName(this.alt);
+    var chosenOne = searchProdsByName(this.firstChild.alt);
     chosenOne.clicked++;
     surveyCount++;
     genProdChoices();
@@ -158,29 +174,15 @@ function searchProdsByName(productName) {
 function survey() {
     genProdChoices();
     choicePanes.forEach(function(pane, index) {
-        pane.addEventListener('click', clickProduct);   
+        pane.parentNode.addEventListener('click', clickProduct);   
     }); 
 }
 
 // Removes event listeners from survey option cards.
 function killSurvey() {
     choicePanes.forEach(function(pane, index) {
-        pane.removeEventListener('click', clickProduct); 
+        pane.parentNode.removeEventListener('click', clickProduct); 
     });
-}
-
-// Displays list of all products and how many times each has been shown by the survey and chosen by the user, respectively.
-function showList() {
-    var elUl = makeChild(resultsParent, 'ul');
-    var prods = Product.allProducts;
-    var dataText = '';
-    for (var i = 0; i < prods.length; i++) {
-        dataText = prods[i].prodName + ' was shown ' + prods[i].shown
-         + ' times, and chosen ' + prods[i].clicked + ' times. Chosen '
-         + Math.ceil(100 * prods[i].clicked / (prods[i].shown + .00000001))
-         + '% of the time.';
-        makeChild(elUl, 'li', dataText);
-    }
 }
 
 // Makes and returns array of all product names
@@ -190,7 +192,6 @@ function prodLabels() {
     for (var i = 0; i < prods.length; i++) {
         labels.push(prods[i].prodName);
     }
-    console.log(labels);
     return labels;
 }
 
@@ -201,7 +202,6 @@ function prodClickData() {
     for (var i = 0; i < prods.length; i++) {
         clicks.push(prods[i].clicked);
     }
-    console.log(clicks);
     return clicks;
 }
 
@@ -210,11 +210,10 @@ function randomColor() {
     var red = Math.floor(Math.random() * 255);
     var green = Math.floor(Math.random() * 255);
     var blue = Math.floor(Math.random() * 255);
-    return 'rgb(' + red + ', ' + green + ', ' + blue + ')'
-    
+    return 'rgb(' + red + ', ' + green + ', ' + blue + ')';
 }
 
-// Returns an array of specified length containing random rgb color values as strings
+// Returns an array with length passed in as parameter containing random rgb color values as strings
 function randomColors(numColors) {
     var colorArray = [];
     if (numColors) {
@@ -227,64 +226,90 @@ function randomColors(numColors) {
     return colorArray;
 }
 
-// Creates a horizontal bar chart showing the number of times each product was clicked in the user survey
-function showBarChart() {
-    var prodNames = prodLabels();
-    var clickData = prodClickData();
+// Returns array of survey click data for each product as a percentage of total responses
+function calcPercents() {
+    var clicks = prodClickData();
+    var totalClicks = JSON.parse(localStorage.getItem('userSurveyCount'));
+    var percents = [];
+    for (var i = 0; i < clicks.length; i++) {
+        percents.push(Math.ceil(100 * clicks[i] / totalClicks));
+    }
+    return percents;
+}
 
-    var elBarChart = makeChild(resultsParent, 'canvas').getContext('2d');
+function showChart(chartType, chartLabel, chartDataSet, chartColors) {
+    var chartType = chartType;
+    var chartLabel = chartLabel;
+    var chartDataSet = chartDataSet;
+    var chartColors = chartColors;
+
+    var chartDiv = makeChild(resultsParent, 'div', '', 'chartWrapper');
+    var elChart = makeChild(chartDiv, 'canvas').getContext('2d');
+
+
+    var chartyChart = new Chart(elChart, {
+        type: chartType,
+        data: {
+            labels: prodLabels(),
+            datasets: [{
+                label: chartLabel,
+                backgroundColor: chartColors,
+                data: chartDataSet
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            
+        }
+    });
+
+    if (chartType != 'pie') {
+        var zeroStart = {xAxes: [{ ticks: { beginAtZero: true} }] };
+        chartyChart.options.scales = zeroStart;
+        chartyChart.update();
+    }
+
     
-    new Chart (elBarChart, {
-        type: 'horizontalBar',
-        data: {
-            labels: prodNames,
-            datasets: [{
-                label: 'Number of Times Each Item was Clicked',
-                backgroundColor: randomColor(),
-                data: clickData
-            }]
-        },
-        options: {
-            responsive: false,
-            maintainAspectRatio: true
-        }
-    });
 }
 
-// Creates a pie chart showing the percentage of clicks each Product received in the user survey
-function showPieChart() {
-    var prodNames = prodLabels();
+
+// Displays a bar and pie chart using user click data; graphs the number of clicks for each product and the 
+// percentage of clicks for each product, respectively. 
+function showAllCharts() {
+    var dataColors = randomColors(Product.allProducts.length);
     var clickData = prodClickData();
+    var clickPercData = calcPercents();
 
-    var elPieChart = makeChild(resultsParent, 'canvas').getContext('2d');
-
-    new Chart(elPieChart, {
-        type: 'pie',
-        data: {
-            labels: prodNames,
-            datasets: [{
-                label: 'Percentage of Total Clicks',
-                backgroundColor: randomColors(Product.allProducts.length),
-                data: clickData
-            }]
-        },
-        options: {
-            responsive: false,
-            maintainAspectRatio: true
-        }
-    });
+    showChart('horizontalBar', 'Number of Clicks Per Item', clickData, dataColors);
+    showChart('pie', 'Share of clicks', clickData, dataColors);
+    showChart('horizontalBar', 'Percentage of Total Clicks', clickPercData, dataColors);
 }
 
-function showCharts() {
-    showBarChart();
-    showPieChart();
+function storeData() {
+    var storedCount = localStorage.getItem('userSurveyCount');
+    if (storedCount) {
+        surveyCount += parseInt(storedCount, 10);
+    }
+    localStorage.setItem('userSurveyCount', JSON.stringify(surveyCount));
+    localStorage.setItem('products', JSON.stringify(Product.allProducts));
+    console.log(storedCount);
 }
 
+// Triggered when the number of products chosen in the user survey reaches the maximum survey size.
+// Removes event listeners from survey items, visualizes survey data with charts, and stores the survey data
+// In local storage.
 function surveyCompleted() {
     killSurvey();
-    showCharts();
+    storeData();
+    showAllCharts();
+}
+
+function removeData() {
+    localStorage.removeItem('userSurveyCount');
+    localStorage.removeItem('products'); 
 }
 
 
-seedProducts();
+genProducts();
 survey();

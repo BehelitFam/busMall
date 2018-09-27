@@ -29,13 +29,18 @@ section {
     border: 1px solid green;
     margin: 1em;
     text-align: center;
-    width: auto;
+    width: 90%;
 }
 
 div {
     border: 3px solid black;
     display: inline-block;
-    margin: 0 5em 0 5em;
+    margin: 2em;
+    padding: 1em;
+}
+
+.chartWrapper {
+    width: 40%;
 }
 
 h2 {
@@ -54,11 +59,4 @@ li {
     margin: .5em;
 }
 
-canvas {
-    border: 3px solid blue;
-    margin-left: auto;
-    margin-right: auto;
-    padding: .2em;
-    width: 40%;
-    
-}
+
