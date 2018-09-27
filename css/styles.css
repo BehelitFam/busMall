@@ -36,6 +36,7 @@ div {
     border: 3px solid black;
     display: inline-block;
     margin: 2em;
+    padding: 1em;
 }
 
 .chartWrapper {

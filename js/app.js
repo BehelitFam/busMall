@@ -267,6 +267,7 @@ function showChart(chartType, chartLabel, chartDataSet, chartColors) {
     if (chartType != 'pie') {
         var zeroStart = {xAxes: [{ ticks: { beginAtZero: true} }] };
         chartyChart.options.scales = zeroStart;
+        chartyChart.update();
     }
 
     
