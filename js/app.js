@@ -2,8 +2,8 @@
 
 // Global variables that determine the number of options the users will be presented with, and the number 
 // of times they will be asked to choose before the survey will end and the results will be displayed. 
-var surveyChoices = 5;
-var surveySize = 10;
+var surveyChoices = 3;
+var surveySize = 25;
 
 // Creates reference to parent element where we will display our survey
 var surveyParent = document.getElementsByClassName('choiceyChoices')[0];
@@ -237,6 +237,8 @@ function calcPercents() {
     return percents;
 }
 
+// Displays a chart with Chart.js using given parameters for chart type, label,
+// data, and color scheme
 function showChart(chartType, chartLabel, chartDataSet, chartColors) {
     var chartType = chartType;
     var chartLabel = chartLabel;
@@ -264,7 +266,7 @@ function showChart(chartType, chartLabel, chartDataSet, chartColors) {
         }
     });
 
-    if (chartType != 'pie') {
+    if (chartType === 'horizontalBar') {
         var zeroStart = {xAxes: [{ ticks: { beginAtZero: true} }] };
         chartyChart.options.scales = zeroStart;
         chartyChart.update();
@@ -286,6 +288,8 @@ function showAllCharts() {
     showChart('horizontalBar', 'Percentage of Total Clicks', clickPercData, dataColors);
 }
 
+
+// Stores data on user survey responses on local storage
 function storeData() {
     var storedCount = localStorage.getItem('userSurveyCount');
     if (storedCount) {
