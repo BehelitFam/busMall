@@ -1,19 +1,41 @@
 
 body {
+    background-color: rgb(201, 201, 201);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
 }
 
 header, footer {
-    background-color: rgb(34, 63, 29);
+    background-color: rgb(255, 92, 51);
     color: white;
     font-size: 3em;
     height: 3em;
+    padding: .3em;
 }
 
 header, footer, main {
     padding: 0 3em 0 3m;
     text-align: center;
+}
+
+header {
+    text-align: center;
+    position: relative;
+}
+
+h1 {
+    vertical-align: center;
+    position: absolute;
+    top: 30%;
+    right: 30%;
+    left: 30%;
+    padding: .2em;
+}
+
+header img {
+    float: left;
+    height: 90%;
+    width: auto;
 }
 
 main {
@@ -25,18 +47,24 @@ footer {
     margin-bottom: 0;
 }
 
+.choiceCard {
+    background-color: rgb(235, 235, 235);
+    border-radius: 10px;
+}
+
 section {
-    border: 1px solid green;
-    margin: 1em;
+    background-color: rgb(219, 217, 217);
+    border-radius: 15px;
+    margin: 1em auto 1em auto;
     text-align: center;
     width: 90%;
 }
 
 div {
-    border: 3px solid black;
     display: inline-block;
     margin: 2em;
     padding: 1em;
+    width: 25%;
 }
 
 .chartWrapper {
@@ -44,11 +72,15 @@ div {
 }
 
 h2 {
+    background-color: rgb(88, 179, 207);
+    border-radius: 15px;
+    color: white;
     display: block;
-    margin: 1em;
+    padding: 1em;
 }
 
 img {
+    border-radius: 15px;
     max-height: 15em;
     max-width: 15em;
 }
@@ -59,4 +91,11 @@ li {
     margin: .5em;
 }
 
+p {
+    background-color: rgb(88, 179, 207);
+    border-radius: 15px;
+    color: white;
+    margin: .5em;
+    padding: .5em;
+}
 
